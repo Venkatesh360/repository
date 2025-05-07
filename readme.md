@@ -132,6 +132,4 @@ No external dependencies are required.
 
 ---
 
-## 📄 License
-MIT License (or specify your own)
 ```
