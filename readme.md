@@ -1,9 +1,9 @@
-```md
+
 # TCP Stock Packet Client
 
 This Node.js application connects to a TCP server to retrieve stock trading packets. It ensures packets are received in the correct sequence, re-requests any missing packets, parses the binary data, and outputs it to a JSON file.
 
----
+
 
 ## 📦 Project Structure
 
