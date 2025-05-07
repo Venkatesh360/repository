@@ -16,7 +16,6 @@ let stockData = [];
 
 const clientSocket = new net.Socket();
 
-// Utility: Write parsed stock data to JSON
 function writeToFile(filename, data) {
   fs.writeFile(filename, JSON.stringify(data, null, 2), (err) => {
     if (err) return console.error(`Write error: ${err}`);
@@ -24,7 +23,6 @@ function writeToFile(filename, data) {
   });
 }
 
-// Request packet(s) from the server
 function sendRequest(callType, sequence = 0) {
   const payload = Buffer.alloc(2);
   payload.writeUInt8(callType, 0);
@@ -32,7 +30,6 @@ function sendRequest(callType, sequence = 0) {
   clientSocket.write(payload);
 }
 
-// Connection and disconnection
 function connectToServer(callback) {
   clientSocket.connect(PORT, HOSTNAME, () => {
     console.log(`Connected to ${HOSTNAME}:${PORT}`);
@@ -44,7 +41,6 @@ function disconnectFromServer() {
   clientSocket.end();
 }
 
-// Fetch all packets
 function fetchAllPackets() {
   connectToServer(() => {
     console.log('Requesting all packets...');
@@ -52,7 +48,6 @@ function fetchAllPackets() {
   });
 }
 
-// Fetch missing packets
 function fetchMissingPackets() {
   connectToServer(() => {
     console.log(`Fetching missing packets: ${missedSequences}`);
@@ -64,12 +59,10 @@ function fetchMissingPackets() {
   });
 }
 
-// Check if there are any missing packets
 function hasMissingPackets() {
   return missedSequences.length > 0;
 }
 
-// Parse incoming packet data
 function parsePacketData(data) {
   const PACKET_SIZE = 17;
 
@@ -86,11 +79,10 @@ function parsePacketData(data) {
 
     const seq = parsed.packetSequence;
 
-    // Track missing sequences
     if (seq !== expectedSequence) {
       for (let j = expectedSequence; j < seq; j++) {
         missedSequences.push(j);
-        stockData[j - 1] = j; // placeholder
+        stockData[j - 1] = j; 
       }
     }
 
@@ -104,7 +96,6 @@ function parsePacketData(data) {
   }
 }
 
-// Socket events
 clientSocket.on('data', parsePacketData);
 
 clientSocket.on('error', (err) => {
@@ -122,5 +113,4 @@ clientSocket.on('close', () => {
   }
 });
 
-// Initial call
 fetchAllPackets();
